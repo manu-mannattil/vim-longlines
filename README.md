@@ -15,8 +15,8 @@ longlines.vim defines three commands:
 
 When the longline mode is on, motion commands such as `j`, `k`, `gg`,
 `G`, etc., work on display lines rather than actual lines.  Although the
-longline mode tries to replicate most motion commands reasonably well,
-some mappings (e.g., `dd`, `V`, etc.) don't work very well.
+longline mode replicates most commands reasonably well, some mappings
+(e.g., `dd`, `V`, etc.) don't work very well.
 
 It is also possible to enable the longline mode for certain filetypes
 automatically by using an autocommand:

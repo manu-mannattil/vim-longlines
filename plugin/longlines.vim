@@ -34,7 +34,7 @@ endfunction
 
 " Synopsis: s:longlines_on()
 function! s:longlines_on() abort
-  if exists('b:longlines')
+  if exists('b:longlines') && b:longlines == 1
     return
   else
     let b:longlines = 1
@@ -107,7 +107,7 @@ endfunction
 
 " Synopsis: s:longlines_off()
 function! s:longlines_off() abort
-  if exists('b:longlines')
+  if exists('b:longlines') && b:longlines == 1
     unlet b:longlines
   else
     return
@@ -127,18 +127,20 @@ function! s:longlines_off() abort
       execute value[2] . 'noremap <buffer> ' . value[0] value[1]
     endif
   endfor
-  let b:mappings = {}
+
+  unlet b:mappings
+  unlet b:options
 endfunction
 
 " Synopsis: s:longlines_toggle()
 function! s:longlines_toggle() abort
-  if exists('b:longlines')
+  if exists('b:longlines') && b:longlines == 1
     call s:longlines_off()
   else
     call s:longlines_on()
   endif
 endfunction
 
-command! -nargs=0 LongLines silent call s:longlines_toggle()
-command! -nargs=0 LongLinesOn silent call s:longlines_on()
-command! -nargs=0 LongLinesOff silent call s:longlines_off()
+command! -bar -nargs=0 LongLines silent call s:longlines_toggle()
+command! -bar -nargs=0 LongLinesOn silent call s:longlines_on()
+command! -bar -nargs=0 LongLinesOff silent call s:longlines_off()
