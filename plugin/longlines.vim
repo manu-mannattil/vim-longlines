@@ -26,18 +26,11 @@ function! s:longlines_map(lhs, rhs, ...) abort
   let mode = get(a:000, 0, '')
   let arg = get(a:000, 1, '')
 
-  if !has_key(b:mappings, mode . a:lhs)
-    let b:mappings[mode . a:lhs] = [a:lhs, maparg(a:lhs, mode), mode]
+  if !has_key(b:mappings, mode.a:lhs)
+    let b:mappings[mode.a:lhs] = [a:lhs, maparg(a:lhs, mode), mode]
   endif
 
-  " If we're remapping an insert mode key sequence, we need to check if
-  " the ins-completion-menu is visible -- if it's visible we should
-  " avoid remapping keys.
-  if mode == 'i'
-    execute 'inoremap <buffer> <expr>' a:lhs 'pumvisible() ? "' . escape(a:lhs, '"') . '" : "' . escape(a:rhs, '"') . '"'
-  else
-    execute mode . 'noremap <buffer>' arg a:lhs a:rhs
-  endif
+  execute mode.'noremap <silent> <buffer>' arg a:lhs a:rhs
 endfunction
 
 " Synopsis: s:longlines_on()
@@ -53,7 +46,7 @@ function! s:longlines_on() abort
   " Save the options we're about to change.
   let b:options = {}
   for key in s:optkeys
-    execute 'let b:options[key] = &' . key
+    execute 'let b:options[key] = &'.key
   endfor
 
   " These options aren't useful when the longline mode is on.
@@ -99,10 +92,9 @@ function! s:longlines_on() abort
   call s:longlines_map('D', 'dg$', 'n')
   call s:longlines_map('Y', 'yg$', 'n')
 
-  " None of the following mappings work properly.  (I'd be glad to know
-  " of ways to map them properly).  They don't work with counts,
-  " registers, and in general behave differently compared to their usual
-  " selves.
+  " None of the following mappings work properly.  (I'd be glad to know of ways
+  " to map them properly.)  They don't work with counts, registers, and in
+  " general behave differently compared to their usual selves.
   call s:longlines_map('cc', 'strlen(getline("."))>0?"g0cg$":"cc"', 'n', '<expr>')
   call s:longlines_map('dd', 'strlen(getline("."))>0?"g0dg$":"dd"', 'n', '<expr>')
   call s:longlines_map('yy', 'strlen(getline("."))>0?"g0yg$":"yy"', 'n', '<expr>')
@@ -112,9 +104,11 @@ function! s:longlines_on() abort
 
   " -- Insert mode -- "
 
-  call s:longlines_map('<Up>', '<C-O>gk', 'i')
-  call s:longlines_map('<Down>', '<C-O>gj', 'i')
-
+  " If we're remapping an insert mode key sequence, we need to check if the
+  " ins-completion-menu is visible -- if it's visible we should avoid remapping
+  " keys.
+  call s:longlines_map('<Up>', 'pumvisible()?"<Up>":"<C-O>gk"', 'i', '<expr>')
+  call s:longlines_map('<Down>', 'pumvisible()?"<Down>":"<C-O>gj"', 'i', '<expr>')
   call s:longlines_map('<Home>', '<C-O>g<Home>', 'i')
   call s:longlines_map('<End>', '<C-O>g<End>', 'i')
 
@@ -123,29 +117,33 @@ function! s:longlines_on() abort
   " Approximate mouse scrolling in normal/insert mode.
   " By default, Vim scrolls up/down by 3 lines.
   call s:longlines_map('<ScrollWheelUp>', '3gk')
-  call s:longlines_map('<ScrollWheelUp>', '<c-o>3gk', 'i')
+  call s:longlines_map('<ScrollWheelUp>', '<C-O>3gk', 'i')
   call s:longlines_map('<ScrollWheelDown>', '3gj')
-  call s:longlines_map('<ScrollWheelDown>', '<c-o>3gj', 'i')
+  call s:longlines_map('<ScrollWheelDown>', '<C-O>3gj', 'i')
 
   " Pagewise mouse scrolling.
-  call s:longlines_map('<S-ScrollWheelUp>', 'w:longlines_lines . "gk"', '', '<expr>')
-  call s:longlines_map('<C-ScrollWheelUp>', 'w:longlines_lines . "gk"', '', '<expr>')
-  call s:longlines_map('<S-ScrollWheelDown>', 'w:longlines_lines . "gj"', '', '<expr>')
-  call s:longlines_map('<C-ScrollWheelDown>', 'w:longlines_lines . "gj"', '', '<expr>')
+  call s:longlines_map('<S-ScrollWheelUp>', 'w:longlines_lines."gk"', '', '<expr>')
+  call s:longlines_map('<C-ScrollWheelUp>', 'w:longlines_lines."gk"', '', '<expr>')
+  call s:longlines_map('<S-ScrollWheelDown>', 'w:longlines_lines."gj"', '', '<expr>')
+  call s:longlines_map('<C-ScrollWheelDown>', 'w:longlines_lines."gj"', '', '<expr>')
 
   call s:longlines_map('<C-E>', 'gj')
-  call s:longlines_map('<C-D>', 'w:longlines_half_lines . "gj"', '', '<expr>')
+  call s:longlines_map('<C-D>', 'w:longlines_half_lines."gj"', '', '<expr>')
 
   call s:longlines_map('<C-Y>', 'gk')
-  call s:longlines_map('<C-U>', 'w:longlines_half_lines . "gk"', '', '<expr>')
+  call s:longlines_map('<C-U>', 'w:longlines_half_lines."gk"', '', '<expr>')
 
-  call s:longlines_map('<C-F>', 'w:longlines_lines . "gj"', '', '<expr>')
-  call s:longlines_map('<S-Down>', 'w:longlines_lines . "gj"', '', '<expr>')
-  call s:longlines_map('<PageDown>', 'w:longlines_lines . "gj"', '', '<expr>')
+  call s:longlines_map('<C-F>', 'w:longlines_lines."gj"', '', '<expr>')
+  call s:longlines_map('<S-Down>', 'w:longlines_lines."gj"', '', '<expr>')
+  call s:longlines_map('<S-Down>', 'pumvisible()?"<S-Down>":"<Esc>".w:longlines_lines."gji"', 'i', '<expr>')
+  call s:longlines_map('<PageDown>', 'w:longlines_lines."gj"', '', '<expr>')
+  call s:longlines_map('<PageDown>', 'pumvisible()?"<PageDown>":"<Esc>".w:longlines_lines."gji"', 'i', '<expr>')
 
-  call s:longlines_map('<C-B>', 'w:longlines_lines . "gk"', '', '<expr>')
-  call s:longlines_map('<S-Up>', 'w:longlines_lines . "gk"', '', '<expr>')
-  call s:longlines_map('<PageUp>', 'w:longlines_lines . "gk"', '', '<expr>')
+  call s:longlines_map('<C-B>', 'w:longlines_lines."gk"', '', '<expr>')
+  call s:longlines_map('<S-Up>', 'w:longlines_lines."gk"', '', '<expr>')
+  call s:longlines_map('<S-Up>', 'pumvisible()?"<S-Up>":"<Esc>".w:longlines_lines."gki"', 'i', '<expr>')
+  call s:longlines_map('<PageUp>', 'w:longlines_lines."gk"', '', '<expr>')
+  call s:longlines_map('<PageUp>', 'pumvisible()?"<PageUp>":"<Esc>".w:longlines_lines."gki"', 'i', '<expr>')
 endfunction
 
 " Synopsis: s:longlines_off()
@@ -158,16 +156,16 @@ function! s:longlines_off() abort
 
   " Restore options.
   for key in s:optkeys
-    execute 'let &' . key . ' = b:options[key]'
+    execute 'let &'.key.' = b:options[key]'
   endfor
 
   " Restore mappings.
   for key in keys(b:mappings)
     let value = b:mappings[key]
     if value[1] == ''
-      execute value[2] . 'unmap <buffer>' . value[0]
+      execute value[2].'unmap <buffer>' value[0]
     else
-      execute value[2] . 'noremap <buffer> ' . value[0] value[1]
+      execute value[2].'noremap <buffer>' value[0] value[1]
     endif
   endfor
 
