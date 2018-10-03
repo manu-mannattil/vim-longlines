@@ -108,7 +108,7 @@ function! s:longlines_on() abort
   call s:longlines_map('yy', 'strlen(getline("."))>0?"g0yg$":"yy"', 'n', '<expr>')
 
   " Visual line mode.
-  call s:longlines_map('V', 'g0vg$h', 'n')
+  call s:longlines_map('V', 'strlen(getline("."))>0?"g0vg$h":"V"', 'n', '<expr>')
 
   " -- Insert mode -- "
 
