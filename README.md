@@ -1,7 +1,7 @@
 vim-longlines
 =============
 
-A Vim plugin to help navigate through long wrapped lines.
+A Vim plugin to help navigate through long soft-wrapped lines.
 
 Usage
 -----

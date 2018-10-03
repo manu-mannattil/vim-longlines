@@ -1,5 +1,6 @@
-" longlines.vim -- Vim plugin to navigate through long wrapped lines.
+" Vim plugin to navigate through long soft-wrapped lines
 " Version: 0.1
+" License: Public domain
 
 if exists('g:longlines_loaded') || &compatible || v:version < 700
   finish
