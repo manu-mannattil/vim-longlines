@@ -9,8 +9,7 @@ endif
 let g:longlines_loaded = 1
 
 " List of options that longlines will change.
-let s:optkeys = ['colorcolumn', 'formatoptions', 'linebreak', 'cursorline',
-      \ 'list', 'relativenumber', 'textwidth', 'wrap', 'wrapmargin']
+let s:optkeys = ['colorcolumn', 'formatoptions', 'linebreak', 'textwidth', 'wrap', 'wrapmargin']
 
 augroup longlines
   autocmd!
@@ -51,11 +50,16 @@ function! s:longlines_on() abort
 
   " These options aren't useful when the longline mode is on.
   setlocal colorcolumn=
-  setlocal formatoptions=jl
+  setlocal formatoptions+=l
+  setlocal formatoptions-=1
+  setlocal formatoptions-=2
+  setlocal formatoptions-=a
+  setlocal formatoptions-=b
+  setlocal formatoptions-=c
+  setlocal formatoptions-=m
+  setlocal formatoptions-=t
+  setlocal formatoptions-=v
   setlocal linebreak
-  setlocal nocursorline
-  setlocal nolist
-  setlocal norelativenumber
   setlocal textwidth=0
   setlocal wrap
   setlocal wrapmargin=0
