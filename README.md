@@ -24,10 +24,7 @@ automatically by using an autocommand:
 
 ```vim
 " Enable the longlines plugin for TeX and MediaWiki files.
-augroup longlines
-  autocmd!
-  autocmd FileType mediawiki,tex LongLinesOn
-augroup END
+autocmd FileType mediawiki,tex LongLinesOn
 ```
 
 License

@@ -12,9 +12,12 @@ let g:longlines_loaded = 1
 let s:optkeys = ['colorcolumn', 'formatoptions', 'linebreak', 'cursorline',
       \ 'list', 'relativenumber', 'textwidth', 'wrap', 'wrapmargin']
 
-autocmd VimEnter,VimResized,WinEnter *
-      \ let w:longlines_lines = &lines - 2 |
-      \ let w:longlines_half_lines = w:longlines_lines / 2
+augroup longlines
+  autocmd!
+  autocmd VimEnter,VimResized,WinEnter *
+        \ let w:longlines_lines = &lines - 2 |
+        \ let w:longlines_half_lines = w:longlines_lines / 2
+augroup END
 
 " Function to map keys and save existing mapping (if any).
 " Synopsis: s:longlines_map({lhs}, {rhs} [, {mode} [, {arg}]])
