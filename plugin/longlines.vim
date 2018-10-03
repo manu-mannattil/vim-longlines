@@ -15,8 +15,8 @@ let s:optkeys = ['colorcolumn', 'formatoptions', 'linebreak', 'cursorline',
 augroup longlines
   autocmd!
   autocmd VimEnter,VimResized,WinEnter *
-        \ let w:longlines_lines = &lines - 2 |
-        \ let w:longlines_half_lines = w:longlines_lines / 2
+        \ let w:longlines_lines = winheight(0) |
+        \ let w:longlines_half_lines = winheight(0) / 2
 augroup END
 
 " Function to map keys and save existing mapping (if any).
@@ -95,12 +95,12 @@ function! s:longlines_on() abort
   " None of the following mappings work properly.  (I'd be glad to know of ways
   " to map them properly.)  They don't work with counts, registers, and in
   " general behave differently compared to their usual selves.
-  call s:longlines_map('cc', 'strlen(getline("."))>0?"g0cg$":"cc"', 'n', '<expr>')
-  call s:longlines_map('dd', 'strlen(getline("."))>0?"g0dg$":"dd"', 'n', '<expr>')
-  call s:longlines_map('yy', 'strlen(getline("."))>0?"g0yg$":"yy"', 'n', '<expr>')
+  call s:longlines_map('cc', 'strlen(getline("."))?"g0cg$":"cc"', 'n', '<expr>')
+  call s:longlines_map('dd', 'strlen(getline("."))?"g0dg$":"dd"', 'n', '<expr>')
+  call s:longlines_map('yy', 'strlen(getline("."))?"g0yg$":"yy"', 'n', '<expr>')
 
   " Visual line mode.
-  call s:longlines_map('V', 'strlen(getline("."))>0?"g0vg$h":"V"', 'n', '<expr>')
+  call s:longlines_map('V', 'strlen(getline("."))?"g0vg$h":"V"', 'n', '<expr>')
 
   " -- Insert mode -- "
 
@@ -128,10 +128,10 @@ function! s:longlines_on() abort
   call s:longlines_map('<C-ScrollWheelDown>', 'w:longlines_lines."gj"', '', '<expr>')
 
   call s:longlines_map('<C-E>', 'gj')
-  call s:longlines_map('<C-D>', 'v:count>0?"gj":w:longlines_half_lines."gj"', '', '<expr>')
+  call s:longlines_map('<C-D>', 'v:count?"gj":w:longlines_half_lines."gj"', '', '<expr>')
 
   call s:longlines_map('<C-Y>', 'gk')
-  call s:longlines_map('<C-U>', 'v:count>0?"gk":w:longlines_half_lines."gk"', '', '<expr>')
+  call s:longlines_map('<C-U>', 'v:count?"gk":w:longlines_half_lines."gk"', '', '<expr>')
 
   call s:longlines_map('<C-F>', 'w:longlines_lines."gj"', '', '<expr>')
   call s:longlines_map('<S-Down>', 'w:longlines_lines."gj"', '', '<expr>')
