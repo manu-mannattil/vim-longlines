@@ -128,10 +128,10 @@ function! s:longlines_on() abort
   call s:longlines_map('<C-ScrollWheelDown>', 'w:longlines_lines."gj"', '', '<expr>')
 
   call s:longlines_map('<C-E>', 'gj')
-  call s:longlines_map('<C-D>', 'w:longlines_half_lines."gj"', '', '<expr>')
+  call s:longlines_map('<C-D>', 'v:count>0?"gj":w:longlines_half_lines."gj"', '', '<expr>')
 
   call s:longlines_map('<C-Y>', 'gk')
-  call s:longlines_map('<C-U>', 'w:longlines_half_lines."gk"', '', '<expr>')
+  call s:longlines_map('<C-U>', 'v:count>0?"gk":w:longlines_half_lines."gk"', '', '<expr>')
 
   call s:longlines_map('<C-F>', 'w:longlines_lines."gj"', '', '<expr>')
   call s:longlines_map('<S-Down>', 'w:longlines_lines."gj"', '', '<expr>')
