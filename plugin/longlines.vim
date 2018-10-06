@@ -177,15 +177,17 @@ function! s:longlines_off() abort
   unlet b:options
 endfunction
 
-" Synopsis: s:longlines_toggle()
-function! s:longlines_toggle() abort
-  if exists('b:longlines') && b:longlines == 1
+" Synopsis: s:longlines({bang})
+function! s:longlines(bang) abort
+  if a:bang
     call s:longlines_off()
   else
-    call s:longlines_on()
+    if exists('b:longlines') && b:longlines == 1
+      call s:longlines_off()
+    else
+      call s:longlines_on()
+    endif
   endif
 endfunction
 
-command! -bar -nargs=0 LongLines silent call s:longlines_toggle()
-command! -bar -nargs=0 LongLinesOn silent call s:longlines_on()
-command! -bar -nargs=0 LongLinesOff silent call s:longlines_off()
+command! -bang -bar -nargs=0 LongLines silent call s:longlines(<bang>0)
