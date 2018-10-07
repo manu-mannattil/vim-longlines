@@ -13,10 +13,22 @@ let s:optkeys = ['colorcolumn', 'formatoptions', 'linebreak', 'textwidth', 'wrap
 
 augroup longlines
   autocmd!
-  autocmd VimEnter,VimResized,WinEnter *
+  autocmd OptionSet,VimEnter,VimResized,WinEnter *
         \ let w:longlines_lines = winheight(0) |
-        \ let w:longlines_half_lines = winheight(0) / 2
+        \ let w:longlines_half_lines = winheight(0) / 2 |
+        \ let w:longlines_columns = s:longlines_width()
 augroup END
+
+" Synopsis: s:longlines_width()
+" https://stackoverflow.com/q/26315925
+function! s:longlines_width()
+  redir => sign_list | execute 'silent sign place buffer='.bufnr('%') | redir end
+  let number_width = max([&numberwidth, strlen(line('$')) + 1])
+  return winwidth(0)
+              \ - &foldcolumn
+              \ - ((&number || &relativenumber) ? number_width : 0)
+              \ - (sign_list =~# '^\n[^\n]*\n$' ? 0 : 2)
+endfunction
 
 " Function to map keys and save existing mapping (if any).
 " Synopsis: s:longlines_map({lhs}, {rhs} [, {mode} [, {arg}]])
@@ -99,9 +111,9 @@ function! s:longlines_on() abort
   " None of the following mappings work properly.  (I'd be glad to know of ways
   " to map them properly.)  They don't work with counts, registers, and in
   " general behave differently compared to their usual selves.
-  call s:longlines_map('cc', 'strlen(getline("."))?"g0cg$":"cc"', 'n', '<expr>')
-  call s:longlines_map('dd', 'strlen(getline("."))?"g0dg$":"dd"', 'n', '<expr>')
-  call s:longlines_map('yy', 'strlen(getline("."))?"g0yg$":"yy"', 'n', '<expr>')
+  call s:longlines_map('cc', 'w:longlines_columns<strlen(getline("."))?"g0cg$":"cc"', 'n', '<expr>')
+  call s:longlines_map('dd', 'w:longlines_columns<strlen(getline("."))?"g0dg$":"dd"', 'n', '<expr>')
+  call s:longlines_map('yy', 'w:longlines_columns<strlen(getline("."))?"g0yg$":"yy"', 'n', '<expr>')
 
   " Visual line mode.
   call s:longlines_map('V', 'strlen(getline("."))?"g0vg$h":"V"', 'n', '<expr>')
