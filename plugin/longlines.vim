@@ -73,17 +73,15 @@ function! s:longlines_on() abort
     execute 'let b:options[key] = &'.key
   endfor
 
+  " Remove all formatoptions that lead to automatic hardwrapping of
+  " input text.
+  for letter in split('1,2,a,b,c,m,t,v', ',')
+    execute 'setlocal formatoptions-='.letter
+  endfor
+  setlocal formatoptions+=l
+
   " These options aren't useful when the longline mode is on.
   setlocal colorcolumn=
-  setlocal formatoptions+=l
-  setlocal formatoptions-=1
-  setlocal formatoptions-=2
-  setlocal formatoptions-=a
-  setlocal formatoptions-=b
-  setlocal formatoptions-=c
-  setlocal formatoptions-=m
-  setlocal formatoptions-=t
-  setlocal formatoptions-=v
   setlocal linebreak
   setlocal textwidth=0
   setlocal wrap
