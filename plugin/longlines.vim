@@ -110,7 +110,7 @@ function! s:longlines_on() abort
 
   " gg and G work as if startofline is set.
   call s:longlines_map('gg', 'gg^', '', 0)
-  call s:longlines_map('G', 'Gg_', '', 0)
+  call s:longlines_map('G', 'Gg_g^', '', 0)
 
   " -- Normal mode -- "
 
