@@ -108,7 +108,9 @@ function! s:longlines_on() abort
 
   " gg and G work as if startofline is set.
   call s:longlines_map('gg', 'gg^', '', 0)
+  call s:longlines_map('<C-Home>', 'gg^', '', 0)
   call s:longlines_map('G', 'Gg_g^', '', 0)
+  call s:longlines_map('<C-End>', 'Gg_', '', 0)
 
   " -- Normal mode -- "
 
@@ -127,7 +129,7 @@ function! s:longlines_on() abort
   call s:longlines_map('yy', 'w:longlines_columns<strlen(getline("."))?"g0yg$":"yy"', 'n', 1)
 
   " Visual line mode.
-  call s:longlines_map('V', 'strlen(getline("."))?"g0vg$h":"V"', 'n', 1)
+  call s:longlines_map('V', 'g0vg$h', 'n', 0)
 
   " -- Insert mode -- "
 
