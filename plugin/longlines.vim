@@ -83,7 +83,6 @@ function! s:longlines_on() abort
   " These options aren't useful when the longline mode is on.
   setlocal colorcolumn=
   setlocal linebreak
-  setlocal textwidth=0
   setlocal wrap
   setlocal wrapmargin=0
 
