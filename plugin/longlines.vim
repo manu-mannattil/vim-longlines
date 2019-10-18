@@ -9,7 +9,7 @@ endif
 let g:longlines_loaded = 1
 
 " List of options that longlines will change.
-let s:optkeys = ['colorcolumn', 'formatoptions', 'linebreak', 'textwidth', 'wrap', 'wrapmargin']
+let s:optkeys = ['formatoptions', 'linebreak', 'wrap', 'wrapmargin']
 
 augroup longlines
   autocmd!
