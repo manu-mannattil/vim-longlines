@@ -201,7 +201,7 @@ function! s:longlines_off() abort
   unlet b:map_restore
 endfunction
 
-" Synopsis: s:longlines({opts}, {{bang})
+" Synopsis: s:longlines({opts}, {bang})
 function! s:longlines(opts, bang) abort
   if a:bang
     call s:longlines_off()
