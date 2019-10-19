@@ -57,8 +57,8 @@ function! s:longlines_map(lhs, rhs, mode, expr) abort
   execute a:mode.'noremap <silent> <buffer>' (a:expr?'<expr>':'') a:lhs a:rhs
 endfunction
 
-" Synopsis: s:longlines_on()
-function! s:longlines_on() abort
+" Synopsis: s:longlines_on({opts})
+function! s:longlines_on(opts) abort
   if exists('b:longlines') && b:longlines == 1
     return
   else
@@ -67,25 +67,28 @@ function! s:longlines_on() abort
 
   let b:map_restore = []
 
-  " Save the options we're about to change.
-  let b:options = {}
-  for key in s:optkeys
-    execute 'let b:options[key] = &'.key
-  endfor
+  " Change formatting options only if required.
+  if a:opts
+    " Save the options we're about to change.
+    let b:options = {}
+    for key in s:optkeys
+      execute 'let b:options[key] = &'.key
+    endfor
 
-  " Remove all formatoptions that lead to automatic hardwrapping of
-  " input text.
-  for letter in split('1,2,a,b,c,m,t,v', ',')
-    execute 'setlocal formatoptions-='.letter
-  endfor
-  setlocal formatoptions+=l
+    " Remove all formatoptions that lead to automatic hardwrapping of
+    " input text.
+    for letter in split('1,2,a,b,c,m,t,v', ',')
+      execute 'setlocal formatoptions-='.letter
+    endfor
+    setlocal formatoptions+=l
 
-  " These options aren't useful when the longline mode is on.
-  setlocal colorcolumn=
-  setlocal linebreak
-  setlocal textwidth=0
-  setlocal wrap
-  setlocal wrapmargin=0
+    " These options aren't useful when the longline mode is on.
+    setlocal colorcolumn=
+    setlocal linebreak
+    setlocal textwidth=0
+    setlocal wrap
+    setlocal wrapmargin=0
+  endif
 
   " -- General (nvo) mappings -- "
 
@@ -184,10 +187,12 @@ function! s:longlines_off() abort
   endif
 
   " Restore options.
-  for key in s:optkeys
-    execute 'let &'.key.' = b:options[key]'
-  endfor
-  unlet b:options
+  if exists('b:options')
+    for key in s:optkeys
+      execute 'let &'.key.' = b:options[key]'
+    endfor
+    unlet b:options
+  endif
 
   " Restore mappings.
   for expr in b:map_restore
@@ -196,17 +201,18 @@ function! s:longlines_off() abort
   unlet b:map_restore
 endfunction
 
-" Synopsis: s:longlines({bang})
-function! s:longlines(bang) abort
+" Synopsis: s:longlines({opts}, {{bang})
+function! s:longlines(opts, bang) abort
   if a:bang
     call s:longlines_off()
   else
     if exists('b:longlines') && b:longlines == 1
       call s:longlines_off()
     else
-      call s:longlines_on()
+      call s:longlines_on(a:opts)
     endif
   endif
 endfunction
 
-command! -bang -bar -nargs=0 LongLines silent call s:longlines(<bang>0)
+command! -bang -bar -nargs=0 LongLines silent call s:longlines(1, <bang>0)
+command! -bang -bar -nargs=0 LongLinesKeys silent call s:longlines(0, <bang>0)
