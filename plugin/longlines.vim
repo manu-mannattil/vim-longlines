@@ -40,25 +40,29 @@ function! s:longlines_map(lhs, rhs, mode, expr) abort
   let map_dict = maparg(a:lhs, a:mode, 0, 1)
 
   if !empty(map_dict)
-    " https://vi.stackexchange.com/a/7735
-    let b:map_restore += [
-          \   ('nvoicsxlt' =~ map_dict.mode ? map_dict.mode :     '')
-          \ . (map_dict.noremap             ? 'noremap   '  : 'map ')
-          \ . (map_dict.buffer              ? ' <buffer> '  :     '')
-          \ . (map_dict.expr                ? ' <expr>   '  :     '')
-          \ . (map_dict.nowait              ? ' <nowait> '  :     '')
-          \ . (map_dict.silent              ? ' <silent> '  :     '')
-          \ .  map_dict.lhs
-          \ .  ' '
-          \ .  substitute(map_dict.rhs, '<SID>', '<SNR>'.map_dict.sid.'_', 'g')
-          \ ]
+    if exists('g:longlines_keep_maps') && g:longlines_keep_maps != 0
+      return
+    else
+      " https://vi.stackexchange.com/a/7735
+      let b:map_restore += [
+            \   ('nvoicsxlt' =~ map_dict.mode ? map_dict.mode :     '')
+            \ . (map_dict.noremap             ? 'noremap   '  : 'map ')
+            \ . (map_dict.buffer              ? ' <buffer> '  :     '')
+            \ . (map_dict.expr                ? ' <expr>   '  :     '')
+            \ . (map_dict.nowait              ? ' <nowait> '  :     '')
+            \ . (map_dict.silent              ? ' <silent> '  :     '')
+            \ .  map_dict.lhs
+            \ .  ' '
+            \ .  substitute(map_dict.rhs, '<SID>', '<SNR>'.map_dict.sid.'_', 'g')
+            \ ]
+    endif
   endif
 
   execute a:mode.'noremap <silent> <buffer>' (a:expr?'<expr>':'') a:lhs a:rhs
 endfunction
 
-" Synopsis: s:longlines_on({opts})
-function! s:longlines_on(opts) abort
+" Synopsis: s:longlines_on()
+function! s:longlines_on() abort
   if exists('b:longlines') && b:longlines == 1
     return
   else
@@ -68,7 +72,7 @@ function! s:longlines_on(opts) abort
   let b:map_restore = []
 
   " Change formatting options only if required.
-  if a:opts
+  if !exists('g:longlines_keep_opts') || g:longlines_keep_opts == 0
     " Save the options we're about to change.
     let b:options = {}
     for key in s:optkeys
@@ -201,18 +205,17 @@ function! s:longlines_off() abort
   unlet b:map_restore
 endfunction
 
-" Synopsis: s:longlines({opts}, {bang})
-function! s:longlines(opts, bang) abort
+" Synopsis: s:longlines({bang})
+function! s:longlines(bang) abort
   if a:bang
     call s:longlines_off()
   else
     if exists('b:longlines') && b:longlines == 1
       call s:longlines_off()
     else
-      call s:longlines_on(a:opts)
+      call s:longlines_on()
     endif
   endif
 endfunction
 
-command! -bang -bar -nargs=0 LongLines silent call s:longlines(1, <bang>0)
-command! -bang -bar -nargs=0 LongLinesKeys silent call s:longlines(0, <bang>0)
+command! -bang -bar -nargs=0 LongLines silent call s:longlines(<bang>0)
