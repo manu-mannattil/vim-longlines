@@ -33,16 +33,15 @@ endfunction
 " Function to map keys and save existing mapping (if any).
 " Synopsis: s:longlines_map({lhs}, {rhs}, {mode}, {expr})
 function! s:longlines_map(lhs, rhs, mode, expr) abort
-  " b:map_restore is a list of expressions that when executed restores all
-  " previous mappings.  Since <buffer> mappings have precedence over other
-  " mappings, we have to always unmap the mappings we make.
-  let b:map_restore += [a:mode.'unmap <buffer>'.a:lhs]
   let map_dict = maparg(a:lhs, a:mode, 0, 1)
-
   if !empty(map_dict)
-    if exists('g:longlines_keep_maps') && g:longlines_keep_maps != 0
+    if exists('g:longlines_keep_maps') && g:longlines_keep_maps != 0 ||
+          \ exists('b:longlines_keep_maps') && b:longlines_keep_maps != 0
       return
     else
+      " b:map_restore is a list of expressions that when executed
+      " restores all previous mappings.  We should add the current
+      " mapping to the restore list.
       " https://vi.stackexchange.com/a/7735
       let b:map_restore += [
             \   ('nvoicsxlt' =~ map_dict.mode ? map_dict.mode :     '')
@@ -58,6 +57,9 @@ function! s:longlines_map(lhs, rhs, mode, expr) abort
     endif
   endif
 
+  " Since <buffer> mappings have precedence over other
+  " mappings, we have to always unmap the mappings we make.
+  let b:map_restore += [a:mode.'unmap <buffer>'.a:lhs]
   execute a:mode.'noremap <silent> <buffer>' (a:expr?'<expr>':'') a:lhs a:rhs
 endfunction
 
@@ -72,7 +74,8 @@ function! s:longlines_on() abort
   let b:map_restore = []
 
   " Change formatting options only if required.
-  if !exists('g:longlines_keep_opts') || g:longlines_keep_opts == 0
+  if (!exists('g:longlines_keep_opts') || g:longlines_keep_opts == 0) &&
+        \ (!exists('b:longlines_keep_opts') || b:longlines_keep_opts == 0)
     " Save the options we're about to change.
     let b:options = {}
     for key in s:optkeys
