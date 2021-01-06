@@ -33,8 +33,8 @@ cursor.
 When the longline mode is on, text is not hardwrapped by default and
 options that enable automatic hardwrapping of text (e.g., Vim's default
 `fo=tcq`) are altered to prevent this.  If you wish to keep these
-options unaltered, set the global variable `g:longlines_keep_opts` to
-a nonzero value:
+options unaltered, set the global variable `g:longlines_keep_opts` or
+the buffer variable `b:longlines_keep_opts` to a nonzero value:
 
 ```Vim
 let g:longlines_keep_opts = 1
@@ -43,11 +43,8 @@ let g:longlines_keep_opts = 1
 Similarly, when the longline mode is on, all motions commands are
 remapped to work on display lines, even when user-defined maps exist.
 If you wish to preserve already existing mappings, set the global
-variable `g:longlines_keep_maps` to a nonzero value:
-
-```Vim
-let g:longlines_keep_maps = 1
-```
+variable `g:longlines_keep_maps` or the buffer variable
+`b:longlines_keep_maps` to a nonzero value:
 
 License
 -------
