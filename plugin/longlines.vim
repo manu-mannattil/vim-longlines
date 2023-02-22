@@ -222,3 +222,7 @@ function! s:longlines(bang) abort
 endfunction
 
 command! -bang -bar -nargs=0 LongLines silent call s:longlines(<bang>0)
+
+if exists('g:longlines_always_enable') && g:longlines_always_enable == 1
+  autocmd BufEnter * call s:longlines_on()
+endif

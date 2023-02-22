@@ -46,6 +46,17 @@ If you wish to preserve already existing mappings, set the global
 variable `g:longlines_keep_maps` or the buffer variable
 `b:longlines_keep_maps` to a nonzero value:
 
+```Vim
+let g:longlines_keep_maps = 1
+```
+
+To always enable the longline mode, set the global variable
+`g:longlines_always_enable` to a nonzero value:
+
+```Vim
+let g:longlines_always_enable = 1
+```
+
 License
 -------
 
