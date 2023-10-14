@@ -9,7 +9,7 @@ endif
 let g:longlines_loaded = 1
 
 " List of options that longlines will change.
-let s:optkeys = ['colorcolumn', 'formatoptions', 'linebreak', 'textwidth', 'wrap', 'wrapmargin']
+let s:optkeys = ['colorcolumn', 'formatoptions', 'linebreak', 'textwidth', 'wrap', 'wrapmargin', 'cursorlineopt']
 
 augroup longlines
   autocmd!
@@ -95,6 +95,9 @@ function! s:longlines_on() abort
     setlocal textwidth=0
     setlocal wrap
     setlocal wrapmargin=0
+
+    " Highlight only the screenline and line number.
+    setlocal cursorlineopt=number,screenline
   endif
 
   " -- General (nvo) mappings -- "
